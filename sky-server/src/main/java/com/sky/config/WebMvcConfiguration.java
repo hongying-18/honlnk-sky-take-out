@@ -18,6 +18,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 /**
  * 配置类，注册web层相关组件
  */
+// TODO 找时间研究一下这个里面所有的代码具体都是什么意思
 @Configuration
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
