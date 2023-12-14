@@ -1,16 +1,20 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -42,6 +47,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee == null) {
             //账号不存在
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
+            // throw new 用于抛出异常的关键字组合
+            // throw 抛出异常关键字
+            // new AccountNotFoundException()  创建了一个异常的实例
+            // MessageConstant.ACCOUNT_NOT_FOUND 是异常的错误消息 一般是个字符串
         }
 
         //密码比对
@@ -81,12 +90,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateTime(LocalDateTime.now());
 
         // 设置当前记录创建人和修改人ID
-        // TODO 后期在来将这部分内容修改为当前登录用户的ID
-
         employee.setCreateUser(BaseContext.getCurrentId());
         employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee);
+    }
+
+    /**
+     * 分页查询
+     * */
+    public PageResult pageQuery (EmployeePageQueryDTO employeePageQueryDTO) {
+        // 开始分页查询 select * from employee Limit 0,10
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+        // 调用mybatis插件 分页查询 传入开始查询的页码和每页的数量  这个插件会自动的吧Limit这个数据配置进去 并且吧这个参数动态的去计算
+
+
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+        // 因为使用了插件 所以就要遵循插件的规则 必须使用Page 并且导包的时候不能导错 上方有包的路径
+
+        long total = page.getTotal();
+        List<Employee> records = page.getResult();
+        return new PageResult(total, records);
     }
 
 }
