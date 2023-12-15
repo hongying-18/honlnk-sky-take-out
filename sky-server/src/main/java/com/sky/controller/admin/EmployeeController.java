@@ -13,7 +13,11 @@ import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
+//import jdk.jpackage.internal.Log;
+// TODO 不知道为什么在这里调用log这个包会报错找 java: 程序包jdk.jpackage.internal不存在
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -100,6 +104,16 @@ public class EmployeeController {
     public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO) {
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用禁用员工账号")
+    public Result startOrStop(@PathVariable("status") Integer status, long id) {
+                               // 这里这个注解的意思是路径栏接收数据  status是通过地址栏接收的 所以要加上 id是通过地址栏接收数据
+                               // @PathVariable("status")中的("status") 如果 /status/{status}和Integer status里面的值是一样的话 那么这里可以省略不写 但是初学阶段在这里写上了 以免忘了
+//        Log.info("启用禁用员工账号：" + status + id);
+        employeeService.startOrStop(status, id);
+        return Result.success();
     }
 
 }

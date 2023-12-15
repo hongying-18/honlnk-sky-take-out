@@ -113,4 +113,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(total, records);
     }
 
+    /**
+     * 禁用启用账号
+     * @param status
+     * @param id
+     */
+    public void startOrStop(Integer status, long id) {
+
+      /*  Employee employee = new Employee();
+        employee.setStatus(status);
+        employee.setId(id);*/
+
+        // 上下这是两种写法 上面这种是比较传统的写法 下面这种是因在在Employee这个类中调用了@Builder这个注解 所以这样写也是完全没有任何问题的
+        // 这是两种不同的编码风格 所以怎么写都行
+
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+
+        employeeMapper.update(employee);
+    }
+
+
 }

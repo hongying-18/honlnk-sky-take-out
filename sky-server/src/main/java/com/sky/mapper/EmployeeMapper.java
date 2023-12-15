@@ -29,4 +29,10 @@ public interface EmployeeMapper {
      * 使用动态sql 再映射文件中完成
      * */
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    /**
+     * 根据主键 动态修改属性
+     * @param employee
+     */
+    void update(Employee employee);
 }
