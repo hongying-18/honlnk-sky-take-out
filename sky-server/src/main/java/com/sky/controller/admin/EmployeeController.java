@@ -111,9 +111,32 @@ public class EmployeeController {
     public Result startOrStop(@PathVariable("status") Integer status, long id) {
                                // 这里这个注解的意思是路径栏接收数据  status是通过地址栏接收的 所以要加上 id是通过地址栏接收数据
                                // @PathVariable("status")中的("status") 如果 /status/{status}和Integer status里面的值是一样的话 那么这里可以省略不写 但是初学阶段在这里写上了 以免忘了
-//        Log.info("启用禁用员工账号：" + status + id);
+        log.info("启用禁用员工账号：{},{}", status, id);
         employeeService.startOrStop(status, id);
         return Result.success();
     }
 
+    /**
+     * 根据管理员id查询管理员信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据用户Id查询用户信息")
+    public Result<Employee> getById(@PathVariable("id") Long id) {
+        log.info("根据用户id查询用户信息id为：{}", id);
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * 修改管理员信息
+     */
+    @PutMapping
+    @ApiOperation("编辑员工信息")
+    public Result update(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("编辑员工信息：{}", employeeDTO);
+        employeeService.upDate(employeeDTO);
+        return Result.success();
+    }
 }
